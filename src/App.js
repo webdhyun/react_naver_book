@@ -1,67 +1,76 @@
-import './App.css';
-import React, { Component } from 'react';
-import Pagination from './components/Pagination.js';
-import MovieList from './components/MovieList.js';
-import Header from './components/Header.js';
-import axios from 'axios';
+
+import React,{Component} from 'react';
+import { BrowserRouter,Route, Routes } from 'react-router-dom';
+
+import Home from './components/Home.js';
+import Search from './components/Search.js';
+import "./App.css";
+import "./sprite.css";
 
 class App extends Component {
 
   constructor(props){
-    super(props);
-
+    super(props)
     this.state={
-            movieList:[
-
-            ],
-            search:null,
-            loading:false,
-            currentPage:1,
-            postsPerPage:3
-        }
+      searchText:''
+    }
   }
 
-  getMovies = async()=>{
-    const axios_movies 
-    = await axios.get("https://yts.mx/api/v2/list_movies.json");
-    console.log(axios_movies);
-    this.setState({movieList:axios_movies.data.data.movies});
-  }
-
-  componentDidMount(){
-    this.getMovies();
-  }
-
-  setCurrentPage=(page)=>{
-    alert(page);
+  handleChange=(e)=>{
     this.setState({
-      currentPage:page
+      [e.target.name]:e.target.value
     })
   }
 
-  currentPosts=(movieList)=> {
-    const {currentPage,postsPerPage}=this.state;
-    const indexOfLast = currentPage*postsPerPage;
-    const indexOfFirst = indexOfLast-postsPerPage;
-    const slicePosts = movieList.slice(indexOfFirst,indexOfLast);
-    return slicePosts;
+  searchBook=()=>{
+    const {searchText}=this.state
+    const trimSearchText = searchText.trim()
+    if(trimSearchText===''){
+      alert("검색어를 입력하세요!")
+      return
+    }
+    window.location.href='/search?bookName='+searchText
+  }
+
+  onKeyPress=(e)=>{
+      if(e.key=='Enter'){
+            this.searchBook()
+      }
   }
 
   render(){
+    return (
+    <BrowserRouter>
+        <div id="search-area"> 
+            <div id="search-left">
+            <a href="/"><img src="/images/bi_naver.gif" alt="로고"/></a>
+            <a href="#"><img src="/images/h_book.gif" alt="로고"/></a>
+            <a href="#"><img src="/images/h_ebook.gif" alt="로고"/></a>
+            <a href="#"><img src="/images/h_audio.png" alt="로고"/></a>
+            </div>
 
-    const{movieList,loading,postsPerPage,currentPage}=this.state;
+            <div id="search-input">
+            <input type="text" onChange={this.handleChange} onKeyPress={this.onKeyPress} 
+            name="searchText" id="searchText-input"/>
+            <input type="image" src="/images/btn_search.gif"
+            onClick={this.searchBook}></input>
+            <input type="image" src="/images/btn_united_search.gif"></input>
+            <span className="detail_search_off"><a></a></span>
+            </div>
 
-      return (
-        <div className="App">
-          <Header/>
-          <MovieList movieList={this.currentPosts(movieList)} loading={loading}></MovieList>
-          <Pagination postsPerPage={postsPerPage} movieLen={movieList.length} 
-          setCurrentPage={this.setCurrentPage} currentPage={currentPage}></Pagination>
+            <div id="search-right">
+              <a href="#"><span>로그인</span></a>
+              <a href="#"><span>회원가입</span></a>
+            </div>
         </div>
-      );
-
+        
+        <Routes>
+              <Route exact path='/' element={<Home/>}/>
+              <Route path='/search' element={<Search/>}/>
+        </Routes>
+      </BrowserRouter>
+  );
   }
-  
 }
 
 export default App;
