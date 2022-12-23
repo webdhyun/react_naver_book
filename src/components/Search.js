@@ -35,6 +35,10 @@ class Search extends Component {
   }
 
   getBookList = async(bookName)=>{
+    
+    const PROXY = window.location.hostname === 'localhost' ? '' : '/proxy';
+    const URL = `${PROXY}/v1/search/book.json`;
+    
     await axios({
       method: 'get',
       url: `/v1/search/book.json?query="${bookName}"`,
