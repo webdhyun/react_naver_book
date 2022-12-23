@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react';
 import '../css/PageNation.css';
-import queryString from 'query-string';
 
 class PageNation extends Component {
 
@@ -37,7 +36,7 @@ class PageNation extends Component {
     }
 
     render(){
-        const {bookName}=this.state
+
         const {totalBookLength,bookPerPage,currentPage}=this.props;
         /*페이지 배열 추가*/
         let pageNumbers = [];
@@ -48,7 +47,7 @@ class PageNation extends Component {
         }
         console.log(pageNumbers);
 
-        var i=1;
+    
         const pageList=pageNumbers.map((page,idx)=>(
             <span id="page" 
             className={currentPage === page? "active" : null}
